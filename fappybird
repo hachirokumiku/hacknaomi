@@ -45,7 +45,6 @@ void draw_pipes(void);
 void update_pipes(void);
 void check_collisions(void);
 void draw_scoreboard(void);
-void draw_pixel(int x, int y, color_t color);  // Pixel drawing function
 void draw_start_screen(void);  // Draw the "Press Start" screen
 void draw_game_over_screen(void);  // Draw the "Game Over" screen
 void reset_game(void);  // Reset the game variables
@@ -53,7 +52,7 @@ void game_over(void);  // Handle game over logic
 
 // Function to set a pixel on the screen at (x, y) with a specific color
 void draw_pixel(int x, int y, color_t color) {
-    if (x >= 0 && x < video_width() && y >= 0 && y < video_height()) {
+    if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
         video_draw_pixel(x, y, color);  // Use video_draw_pixel
     }
 }
@@ -172,10 +171,11 @@ void main() {
 
 // Function to draw the bird (represented as a small rectangle)
 void draw_bird(void) {
+    // Directly drawing the pixels can be optimized
     int x_end = bird.x + bird.width;
     int y_end = bird.y + bird.height;
 
-    // Use a single loop to draw all pixels of the bird
+    // Use memory-efficient drawing (direct frame buffer manipulation could be faster)
     for (int x = bird.x; x < x_end; x++) {
         for (int y = bird.y; y < y_end; y++) {
             draw_pixel(x, y, rgb(255, 255, 0));  // Yellow bird
@@ -204,16 +204,14 @@ void update_bird(void) {
 // Function to draw the pipes (top and bottom pairs)
 void draw_pipes() {
     for (int i = 0; i < 4; i++) {
-        // Draw the top pipe
-        if (i % 2 == 0) {  // Top pipes
+        // Top pipes
+        if (i % 2 == 0) {
             for (int y = 0; y < pipes[i].height; y++) {
                 for (int x = pipes[i].x; x < pipes[i].x + PIPE_WIDTH; x++) {
                     draw_pixel(x, y, rgb(0, 255, 0));  // Green pipe
                 }
             }
-        }
-        // Draw the bottom pipe
-        else {  // Bottom pipes
+        } else {  // Bottom pipes
             for (int y = pipes[i].y; y < SCREEN_HEIGHT; y++) {
                 for (int x = pipes[i].x; x < pipes[i].x + PIPE_WIDTH; x++) {
                     draw_pixel(x, y, rgb(0, 255, 0));  // Green pipe
